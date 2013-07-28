@@ -1,3 +1,4 @@
+#! /usr/bin/env perl
 use strict;
 use warnings;
 use feature 'say';
@@ -8,14 +9,15 @@ use FindBin;
 use Config::PL;
 use DateTime;
 
-my $channel = "#test";
 
 my $c   = AnyEvent->condvar;
 my $irc = new AnyEvent::IRC::Client;
 
 my $bot_nickname = 'pchan';
 my $conf         = config_do 'config.pl';
-$irc->enable_ssl;
+
+my $channel = $conf->{channel};
+$irc->enable_ssl if $conf->{enable_ssl};
 
 $irc->connect(
     $conf->{host},
@@ -30,6 +32,7 @@ $irc->send_srv( "JOIN", $channel );
 $irc->reg_cb( connect    => sub { print "connected\n" } );
 $irc->reg_cb( registered => sub { print "registered\n"; } );
 $irc->reg_cb( disconnect => sub { print "disconnect\n"; } );
+
 
 my $timer;
 $timer = AnyEvent->timer(
