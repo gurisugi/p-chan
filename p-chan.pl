@@ -6,7 +6,7 @@ use AnyEvent::IRC::Client;
 use Encode;
 use FindBin;
 use Config::PL;
-
+use DateTime;
 
 my $channel = "#test";
 
@@ -15,7 +15,6 @@ my $irc = new AnyEvent::IRC::Client;
 
 my $bot_nickname = 'pchan';
 my $conf         = config_do 'config.pl';
-
 $irc->enable_ssl;
 
 $irc->connect(
@@ -34,8 +33,8 @@ $irc->reg_cb( disconnect => sub { print "disconnect\n"; } );
 
 my $timer;
 $timer = AnyEvent->timer(
-    after    => 1, # 秒間まってからループ開始
-    interval => 60*60*3, # 秒数ごとにやる
+    after    => 1,
+    interval => 60*60*3,
     cb       => sub {
         my $now = DateTime->now( time_zone => 'Asia/Tokyo')->hour;
         if ( $now >= 10 && $now <= 20 ) {
